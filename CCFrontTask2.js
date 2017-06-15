@@ -15,58 +15,50 @@ exports.damage = function(spell) {
     
     //checking if spell body has subspells
     var isJee = spellBody.match(/jee/gi),
-        isJe = spellBody.match(/je/gi),
-        isDain = spellBody.match(/dain/gi),
+        isJe = spellBody.match(/je/gi),        
         isAin = spellBody.match(/ain/gi),
         isDai = spellBody.match(/dai/gi),
-        isNe = spellBody.match(/dai/gi),
-        isRestAi = spellBody.match(/dai/gi);
+        isNe = spellBody.match(/ne/gi),
+        isRestAi = spellBody.match(/ai/gi);
     
-    if (isJee.length > 0) {
+    if (isJee !== null) {
       result += 3 * isJee.length;
-      var sBnoJee = spellBody.replace('jee', '');
+      var sBnoJee = spellBody.replace(/jee/g, '');
       console.log(sBnoJee);
       spellBody = sBnoJee;
     }
     
-    if (isJe.length > 0) {
+    if (isJe !== null) {
       result += 2 * isJe.length;
-      var sBnoJe = spellBody.replace('je', '');
+      var sBnoJe = spellBody.replace(/je/g, '');
       console.log(sBnoJe);
       spellBody = sBnoJe;
     }     
-    
-    if (isDain.length > 0) {
-      result += 8 * isDain.length;
-      var sBnoDain = spellBody.replace('dain', '');
-      console.log(sBnoDain);
-      spellBody = sBnoDain;
-    }
-    
-    if (isAin.length > 0) {
+          
+    if (isAin !== null) {
       result += 3 * isAin.length;
-      var sBnoAin = spellBody.replace('ain', '');
+      var sBnoAin = spellBody.replace(/ain/g, '');
       console.log(sBnoAin);
       spellBody = sBnoAin;
     }
     
-    if (isDai.length > 0) {
+    if (isDai !== null) {
       result += 5 * isDai.length;
-      var sBnoDai = spellBody.replace('dai', '');
+      var sBnoDai = spellBody.replace(/dai/g, '');
       console.log(sBnoDai);
       spellBody = sBnoDai;
     }
     
-    if (isNe.length > 0) {
+    if (isNe !== null) {
       result += 2 * isNe.length;
-      var sBnoNe = spellBody.replace('ne', '');
+      var sBnoNe = spellBody.replace(/ne/g, '');
       console.log(sBnoNe);
       spellBody = sBnoNe;
     }
     
-    if (isRestAi.length > 0) {
+    if (isRestAi !== null) {
       result += 2 * isRestAi.length;
-      var sBnoRestAi = spellBody.replace('ai', '');
+      var sBnoRestAi = spellBody.replace(/ai/g, '');
       console.log(sBnoRestAi);
       spellBody = sBnoRestAi;
     }
@@ -77,14 +69,14 @@ exports.damage = function(spell) {
     
     // damage to 0 if negative
     if (result < 0) {
-      result === 0;
+      result = 0;
     }
    
     } else {
       
       //spell uncorrect
       result === 0;
-      console.log('spell uncorrect = zero');
+      console.log('spell uncorrect');
   }  
   
   console.log('damage = ' + result);
