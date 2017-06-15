@@ -1,4 +1,4 @@
-function countDamage(spell) {  
+exports.damage = function(spell) {  
   var isFe = spell.indexOf('fe'),
       isFeMore = spell.match(/fe/gi),
       isAi = spell.lastIndexOf('ai'),
@@ -88,10 +88,11 @@ function countDamage(spell) {
   }  
   
   console.log('damage = ' + result);
+  return result;
 }
 
-countDamage('oijfedainodaindaindainnenenenjeejeeai');
-console.log('----------');
-countDamage('oijfejejeesrfgsdrgftjhxdgtrfhgfjfvgcgthfcgtdxrainjdaineaisfse');
-console.log('----------');
-countDamage('feaioooai');
+//countDamage('oijfedainodaindaindainnenenenjeejeeai');
+//console.log('----------');
+//countDamage('oijfejejeesrfgsdrgftjhxdgtrfhgfjfvgcgthfcgtdxrainjdaineaisfse');
+//console.log('----------');
+//countDamage('feaioooai');
