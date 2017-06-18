@@ -1,90 +1,74 @@
-exports.damage = function(spell) {  
-  var isFe = spell.indexOf('fe'),
-      isFeMore = spell.match(/fe/gi),
-      isAi = spell.lastIndexOf('ai'),
-      result = 0;    
-  
-  //spell existing conditions
-  if (isAi > isFe && isFeMore.length === 1 && isFe >= 0 && isAi > 1) {
-    console.log('spell correct! string cutting positions: ' + isFe + ' and ' + isAi);
-    result = 3;
-    
-    //extracting chars between fe / ai
-    var spellBody = spell.substring(isFe + 2, isAi);
-    console.log(spellBody);
-    
-    //checking if spell body has subspells
-    var isJee = spellBody.match(/jee/gi),
-        isJe = spellBody.match(/je/gi),        
-        isAin = spellBody.match(/ain/gi),
-        isDai = spellBody.match(/dai/gi),
-        isNe = spellBody.match(/ne/gi),
-        isRestAi = spellBody.match(/ai/gi);
-    
-    if (isJee !== null) {
-      result += 3 * isJee.length;
-      var sBnoJee = spellBody.replace(/jee/g, '');
-      console.log(sBnoJee);
-      spellBody = sBnoJee;
-    }
-    
-    if (isJe !== null) {
-      result += 2 * isJe.length;
-      var sBnoJe = spellBody.replace(/je/g, '');
-      console.log(sBnoJe);
-      spellBody = sBnoJe;
-    }     
-          
-    if (isAin !== null) {
-      result += 3 * isAin.length;
-      var sBnoAin = spellBody.replace(/ain/g, '');
-      console.log(sBnoAin);
-      spellBody = sBnoAin;
-    }
-    
-    if (isDai !== null) {
-      result += 5 * isDai.length;
-      var sBnoDai = spellBody.replace(/dai/g, '');
-      console.log(sBnoDai);
-      spellBody = sBnoDai;
-    }
-    
-    if (isNe !== null) {
-      result += 2 * isNe.length;
-      var sBnoNe = spellBody.replace(/ne/g, '');
-      console.log(sBnoNe);
-      spellBody = sBnoNe;
-    }
-    
-    if (isRestAi !== null) {
-      result += 2 * isRestAi.length;
-      var sBnoRestAi = spellBody.replace(/ai/g, '');
-      console.log(sBnoRestAi);
-      spellBody = sBnoRestAi;
-    }
-    
-    //single letters cutting
-    var finalSpell= spellBody.length;
-    result -=  finalSpell;
-    
-    // damage to 0 if negative
-    if (result < 0) {
-      result = 0;
-    }
-   
-    } else {
-      
-      //spell uncorrect
-      result === 0;
-      console.log('spell uncorrect');
-  }  
-  
-  console.log('damage = ' + result);
-  return result;
-}
+exports.damage = function(spellString) {
+  var spellRegex = /fe((fe|jee|je|ain|ai|dai|ne|[a-z])*)ai/g;
 
-//countDamage('oijfedainodaindaindainnenenenjeejeeai');
-//console.log('----------');
-//countDamage('oijfejejeesrfgsdrgftjhxdgtrfhgfjfvgcgthfcgtdxrainjdaineaisfse');
-//console.log('----------');
-//countDamage('feaioooai');
+  var ssScoring = [
+    {score: 1, r: /^fe/},
+    {score: 2, r: /^je/},    
+    {score: 2, r: /^ai/},
+    {score: 2, r: /^ne/},
+    {score: 3, r: /^jee/},
+    {score: 3, r: /^ain/},
+    {score: 5, r: /^dai/},
+    {score:-1, r: /^[a-z]/, noMatch: true}
+  ];
+
+  function damage2(spellString) {  
+    console.log('--------------');
+    console.log('spellString: ' + spellString);
+    
+    var result = spellString.match(spellRegex) ;
+
+    var acc = 0;
+    if(result && result.length>0){
+      for(var r = 0; r<result.length; r++){
+        var spell = result[r];
+        console.log('Spell: ' + spell);
+        
+        var trimmedSpell = spell.substring(2, spell.length -2);
+              
+        if(trimmedSpell.match(/fe/)) {
+          acc = 0
+          console.log('No match found!');
+
+        } else {
+          var damage = countPartDamage(trimmedSpell,['fe'],0);
+          damage.matched.push('ai')
+          damage.score += 3;
+          acc += damage.score;
+          console.log('Matched:' + damage.matched.join('-'));
+
+        }
+      }  
+    } 
+    acc = acc < 0 ? 0 : acc;
+    console.log('Score:  ' + acc);
+    
+    return acc;
+  }
+
+  function countPartDamage(spell,matched,acc){ 
+    // Find best match
+    var bestBranch = null;
+    
+    for(var s = 0; s < ssScoring.length; s++){
+      var ssScore = ssScoring[s];
+      var m       = spell.match(ssScore.r);
+      
+      if(m && m.length>0){
+        var t = spell.replace(ssScore.r,'');
+        var newBranch = countPartDamage(t,ssScore.noMatch ? matched : matched.concat(m), acc+ssScore.score);
+        
+        if(!bestBranch || newBranch.score > bestBranch.score){
+          bestBranch = newBranch;
+        }
+      }
+    }
+      
+    if(bestBranch != null){
+      return { matched: bestBranch.matched, score: bestBranch.score };
+    } else {
+      return { matched: matched, score: acc };
+    }  
+  }
+  return damage2(spellString);   
+}

@@ -1,1 +1,6 @@
+node_modules/
 *.json
+*.js
+*.pdf
+!CCFrontTask2.js
+!main.js
