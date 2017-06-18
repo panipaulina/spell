@@ -1,3 +1,3 @@
 var output = require("./CCFrontTask2.js")
 
-console.log(output.damage('feaineain'));
+console.log(output.damage('fefefefefeaiaiaiaiai'));
