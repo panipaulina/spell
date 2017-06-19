@@ -1,5 +1,5 @@
 exports.damage = function(spellString) {
-  var spellRegex = /fe((fe|jee|je|ain|ai|dai|ne|[a-z])*)ai/g;
+  var spellRegex = /fe((jee|je|ain|ai|dai|ne|[a-z])*)ai/g;
 
   var ssScoring = [
     {score: 1, r: /^fe/},
@@ -12,21 +12,20 @@ exports.damage = function(spellString) {
     {score:-1, r: /^[a-z]/, noMatch: true}
   ];
 
-  function damage2(spellString) {  
-    console.log('--------------');
+  function countDmg(spellString) { 
     console.log('spellString: ' + spellString);
     
-    var result = spellString.match(spellRegex) ;
+    var result = spellString.match(spellRegex);
 
     var acc = 0;
-    if(result && result.length>0){
-      for(var r = 0; r<result.length; r++){
+    if (result && result.length > 0) {
+      for (var r = 0; r < result.length; r++) {
         var spell = result[r];
         console.log('Spell: ' + spell);
         
-        var trimmedSpell = spell.substring(2, spell.length -2);
+        var trimmedSpell = spell.substring(2, spell.length - 2);
               
-        if(trimmedSpell.match(/fe/)) {
+        if (trimmedSpell.match(/fe/)) {
           acc = 0
           console.log('No match found!');
 
@@ -46,29 +45,28 @@ exports.damage = function(spellString) {
     return acc;
   }
 
-  function countPartDamage(spell,matched,acc){ 
-    // Find best match
+  function countPartDamage(spell, matched, acc) {     
     var bestBranch = null;
     
-    for(var s = 0; s < ssScoring.length; s++){
+    for (var s = 0; s < ssScoring.length; s++) {
       var ssScore = ssScoring[s];
-      var m       = spell.match(ssScore.r);
+      var m = spell.match(ssScore.r);
       
-      if(m && m.length>0){
+      if (m && m.length > 0) {
         var t = spell.replace(ssScore.r,'');
-        var newBranch = countPartDamage(t,ssScore.noMatch ? matched : matched.concat(m), acc+ssScore.score);
+        var newBranch = countPartDamage(t,ssScore.noMatch ? matched : matched.concat(m), acc + ssScore.score);
         
-        if(!bestBranch || newBranch.score > bestBranch.score){
+        if (!bestBranch || newBranch.score > bestBranch.score) {
           bestBranch = newBranch;
         }
       }
     }
       
-    if(bestBranch != null){
+    if (bestBranch != null) {
       return { matched: bestBranch.matched, score: bestBranch.score };
     } else {
       return { matched: matched, score: acc };
     }  
   }
-  return damage2(spellString);   
+  return countDmg(spellString);   
 }
